@@ -11,6 +11,6 @@
     "minimum": "12",
     "verified": "12"
   },
-  "manifest": "https://yourdomain.com/fortification-rune/module.json",
+  "manifest": "https://raw.githubusercontent.com/Kazgul1987/fortification-rune/module.json",
   "download": "https://yourdomain.com/fortification-rune/fortification-rune.zip"
 }
