@@ -3,9 +3,11 @@ Hooks.on("createChatMessage", async (message) => {
     
     const roll = message.rolls[0];
     const flags = message.flags?.pf2e;
-    if (!flags || !flags.context?.outcome || flags.context.outcome !== "criticalSuccess") return;
+    if (!flags || !flags.context?.outcome) return;
+    if (flags.context.outcome !== "criticalSuccess" && flags.context.degreeOfSuccess !== 2) return;
     
-    const target = canvas.tokens.get(flags.target?.token?.id);
+    const targetTokenId = flags.target?.token?.id;
+    const target = canvas.tokens.get(targetTokenId);
     if (!target || !target.actor) return;
     
     // Prüfe auf Fortification-Runen
@@ -14,12 +16,13 @@ Hooks.on("createChatMessage", async (message) => {
     
     // Flat Check durchführen
     const flatCheckDC = fortification === "greater" ? 14 : 17;
-    const flatCheckRoll = new Roll("1d20").roll({ async: false });
+    const flatCheckRoll = await new Roll("1d20").roll();
+    await flatCheckRoll.toMessage({ flavor: `${target.name} attempts a Fortification Rune Flat Check (DC ${flatCheckDC})` });
     
     // Falls erfolgreich, Krit in normalen Treffer umwandeln
     if (flatCheckRoll.total >= flatCheckDC) {
         ui.notifications.info(`${target.name}'s Fortification Rune negates the critical hit!`);
-        message.update({ "flags.pf2e.context.outcome": "success" });
+        await message.update({ "flags.pf2e.context.outcome": "success" });
     }
 });
 
