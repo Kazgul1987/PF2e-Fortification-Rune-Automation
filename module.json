@@ -11,6 +11,6 @@
     "minimum": "12",
     "verified": "12"
   },
-  "manifest": "https://raw.githubusercontent.com/Kazgul1987/fortification-rune/module.json",
-  "download": "https://github.com/Kazgul1987/fortification-rune/fortification-rune.zip"
+  "manifest": "https://raw.githubusercontent.com/Kazgul1987/PF2e-Fortification-Rune-Automation/main/module.json",
+  "download": "https://github.com/Kazgul1987/PF2e-Fortification-Rune-Automation/releases/latest/download//fortification-rune.zip"
 }
