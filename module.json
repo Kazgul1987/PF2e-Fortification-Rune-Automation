@@ -1,0 +1,16 @@
+{
+  "name": "fortification-rune",
+  "title": "PF2e Fortification-Rune-Automation",
+  "description": "Automates the Fortification and Greater Fortification runes in Pathfinder 2e.",
+  "version": "1.0.0",
+  "author": "Kazgul1987",
+  "systems": ["pf2e"],
+  "esmodules": ["scripts/main.js", "scripts/fortification.js"],
+  "languages": [{"lang": "en", "path": "lang/en.json"}],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
+  "manifest": "https://yourdomain.com/fortification-rune/module.json",
+  "download": "https://yourdomain.com/fortification-rune/fortification-rune.zip"
+}
