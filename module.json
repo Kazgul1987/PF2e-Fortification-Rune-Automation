@@ -14,7 +14,9 @@
       "url": "https://github.com/Kazgul1987/PF2e-Fortification-Rune-Automation"
     }
   ],
-  "systems": ["pf2e"],
+  "systems": [
+    "pf2e"
+  ],
   "relationships": {
     "systems": [
       {
@@ -27,8 +29,13 @@
       }
     ]
   },
-  "esmodules": ["scripts/main.js", "scripts/fortification.js"],
-  "styles": ["styles/styles.css"],
+  "esmodules": [
+    "scripts/main.js",
+    "scripts/fortification.js"
+  ],
+  "styles": [
+    "styles/styles.css"
+  ],
   "languages": [
     {
       "lang": "en",
