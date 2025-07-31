@@ -7,9 +7,20 @@ const MODULE_ID = 'fortification-rune';
 function getFortificationRune(actor) {
   const armor = actor.itemTypes?.armor?.find(a => a.system?.equipped?.value);
   if (!armor) return null;
-  const propertyRunes = armor.system?.runes?.property ?? [];
+
+  let propertyRunes = armor.system?.runes?.property;
+  if (Array.isArray(propertyRunes)) {
+    propertyRunes = propertyRunes;
+  } else if (propertyRunes?.value) {
+    propertyRunes = propertyRunes.value;
+  } else {
+    propertyRunes = [];
+  }
+  propertyRunes = propertyRunes.map(r => typeof r === 'string' ? r : r?.slug ?? r);
+
   if (propertyRunes.includes('greater-fortification')) return 'greater';
   if (propertyRunes.includes('fortification')) return 'fortification';
+
   const name = armor.name.toLowerCase();
   if (name.includes('greater fortification')) return 'greater';
   if (name.includes('fortification')) return 'fortification';
@@ -66,13 +77,20 @@ Hooks.once('ready', () => {
 });
 
 Hooks.on('createChatMessage', message => {
-  if (!message.isRoll) return;
   const flags = message.flags?.pf2e;
   if (!flags) return;
   const degree = flags.context?.degreeOfSuccess ?? (flags.context?.outcome === 'criticalSuccess' ? 2 : null);
   if (degree !== 2) return;
 
-  const targets = flags.context?.targets?.map(t => t.token) ?? [flags.target?.token?.id].filter(Boolean);
+  let targets = [];
+  if (flags.context?.targets?.length) {
+    targets = flags.context.targets.map(t => t.token);
+  } else if (flags.target?.token?.id) {
+    targets = [flags.target.token.id];
+  } else {
+    targets = Array.from(game.user.targets ?? []).map(t => t.id);
+  }
+
   for (const targetId of targets) {
     const token = canvas.tokens.get(targetId);
     const actor = token?.actor;
