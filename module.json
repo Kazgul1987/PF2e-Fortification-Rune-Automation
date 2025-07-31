@@ -2,7 +2,7 @@
   "id": "fortification-rune",
   "title": "PF2e Fortification Rune Automation",
   "description": "Automates the Fortification and Greater Fortification runes in Pathfinder 2e.",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "type": "module",
   "compatibility": {
     "minimum": "11",
