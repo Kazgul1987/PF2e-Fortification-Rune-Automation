@@ -32,7 +32,7 @@ function getFortificationRune(actor) {
  */
 function postFortificationMessage(token, dc) {
   const content = `<div class="fortification-check" data-token="${token.id}" data-dc="${dc}">
-    <button class="fortification-button">Fortification Check DC ${dc}</button>
+    <button type="button" class="fortification-button">Fortification Check DC ${dc}</button>
   </div>`;
   ChatMessage.create({
     user: game.user.id,
@@ -44,7 +44,7 @@ function postFortificationMessage(token, dc) {
 /**
  * Handle button clicks for fortification checks.
  */
-function onButtonClick(event) {
+async function onButtonClick(event) {
   const button = event.currentTarget;
   const wrapper = button.closest('.fortification-check');
   const tokenId = wrapper.dataset.token;
@@ -52,17 +52,18 @@ function onButtonClick(event) {
   const token = canvas.tokens.get(tokenId);
   if (!token) return;
 
-  new Roll('1d20').evaluate({async: true}).then(roll => {
-    roll.toMessage({
-      speaker: ChatMessage.getSpeaker({ token }),
-      flavor: `Fortification Flat Check (DC ${dc})`
-    });
-    if (roll.total >= dc) {
-      ui.notifications.info(`${token.name} reduces the critical hit to a normal hit.`);
-    } else {
-      ui.notifications.info(`${token.name} fails the Fortification flat check.`);
-    }
+  const roll = await new Roll('1d20').evaluate({ async: true });
+  const success = roll.total >= dc;
+  const speaker = ChatMessage.getSpeaker({ token });
+  await roll.toMessage({
+    speaker,
+    flavor: `Fortification Flat Check (DC ${dc})`
   });
+  const resultText = success
+    ? `${token.name} reduces the critical hit to a normal hit.`
+    : `${token.name} fails the Fortification flat check.`;
+  await ChatMessage.create({ speaker, content: resultText });
+  ui.notifications.info(resultText);
 }
 
 Hooks.once('ready', () => {
@@ -77,22 +78,11 @@ Hooks.once('ready', () => {
 });
 
 Hooks.on('createChatMessage', message => {
-  const flags = message.flags?.pf2e;
-  if (!flags) return;
-  const degree = flags.context?.degreeOfSuccess ?? (flags.context?.outcome === 'criticalSuccess' ? 2 : null);
-  if (degree !== 2) return;
+  const context = message.flags?.pf2e?.context;
+  if (context?.type !== 'attack-roll' || context?.outcome !== 'criticalSuccess') return;
 
-  let targets = [];
-  if (flags.context?.targets?.length) {
-    targets = flags.context.targets.map(t => t.token);
-  } else if (flags.target?.token?.id) {
-    targets = [flags.target.token.id];
-  } else {
-    targets = Array.from(game.user.targets ?? []).map(t => t.id);
-  }
-
-  for (const targetId of targets) {
-    const token = canvas.tokens.get(targetId);
+  for (const target of context.targets ?? []) {
+    const token = canvas.tokens.get(target.token);
     const actor = token?.actor;
     if (!actor) continue;
     const rune = getFortificationRune(actor);
