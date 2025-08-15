@@ -85,9 +85,15 @@ Hooks.on('createChatMessage', message => {
     const token = canvas.tokens.get(target.token);
     const actor = token?.actor;
     if (!actor) continue;
-    const rune = getFortificationRune(actor);
-    if (!rune) continue;
-    const dc = rune === 'greater' ? 14 : 17;
+    const effect = actor.itemTypes.effect?.find(e => e.slug === 'effect-fortification' || e.slug === 'effect-greater-fortification');
+    let dc;
+    if (effect) {
+      dc = effect.slug === 'effect-greater-fortification' ? 14 : 17;
+    } else {
+      const rune = getFortificationRune(actor);
+      if (!rune) continue;
+      dc = rune === 'greater' ? 14 : 17;
+    }
     postFortificationMessage(token, dc);
   }
 });
