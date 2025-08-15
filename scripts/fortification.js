@@ -82,10 +82,12 @@ Hooks.on('createChatMessage', message => {
   if (context?.type !== 'attack-roll' || context?.outcome !== 'criticalSuccess') return;
 
   for (const target of context.targets ?? []) {
-    const token = canvas.tokens.get(target.token);
+    const token = canvas.tokens.get(target.tokenId ?? target.token);
     const actor = token?.actor;
     if (!actor) continue;
-    const effect = actor.itemTypes.effect?.find(e => e.slug === 'effect-fortification' || e.slug === 'effect-greater-fortification');
+    const effect = actor.itemTypes.effect?.find(
+      e => e.slug === 'effect-fortification' || e.slug === 'effect-greater-fortification'
+    );
     let dc;
     if (effect) {
       dc = effect.slug === 'effect-greater-fortification' ? 14 : 17;
