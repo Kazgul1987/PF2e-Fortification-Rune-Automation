@@ -43,7 +43,15 @@
       "path": "lang/en.json"
     }
   ],
-  "packs": [],
+  "packs": [
+    {
+      "name": "fortification-effects",
+      "label": "Fortification Effects",
+      "path": "packs/fortification-effects.db",
+      "type": "Item",
+      "system": "pf2e"
+    }
+  ],
   "url": "https://github.com/Kazgul1987/PF2e-Fortification-Rune-Automation",
   "manifest": "https://raw.githubusercontent.com/Kazgul1987/PF2e-Fortification-Rune-Automation/main/module.json",
   "download": "https://github.com/Kazgul1987/PF2e-Fortification-Rune-Automation/releases/latest/download/fortification-rune.zip"
