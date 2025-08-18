@@ -79,7 +79,7 @@ Hooks.once('ready', () => {
 
 Hooks.on('createChatMessage', message => {
   const context = message.flags?.pf2e?.context;
-  if (context?.type !== 'attack-roll' || context?.outcome !== 'criticalSuccess') return;
+  if (context?.type !== 'attack-roll') return;
 
   for (const target of context.targets ?? []) {
     const token = canvas.tokens.get(target.tokenId ?? target.token);
